@@ -1,0 +1,137 @@
+\documentclass[
+	a4paper,
+	pagesize,
+	pdftex,
+	12pt,
+	ngerman,
+	fleqn,
+	final,
+	]{scrartcl}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc} % Eingabekodierung: UTF-8
+\usepackage[T1]{fontenc} % ordentliche Trennung
+\usepackage[ngerman]{babel}
+\usepackage{lmodern} % ordentliche Schriften
+\usepackage[unicode=true]{hyperref}
+\usepackage{setspace,graphicx,tikz,tabularx} % für Elemente der Titelseite
+\usepackage[draft=false,babel,tracking=true,kerning=true,spacing=true]{microtype} % optischer Randausgleich etc.
+
+% \usepackage{pgfgantt}
+\usepackage[section]{placeins}
+\usepackage{caption}
+% \usepackage{subcaption}
+% \usepackage{longtable}
+
+\usepackage{lscape}
+\usepackage[numbers,square]{natbib}
+\usepackage{geometry}
+\geometry{left=2cm, right=2cm,top=2cm,bottom=2cm}
+
+\usepackage{amssymb}
+
+\begin{document}
+
+	\title{Predicting 30 day mortality of sepsis patients using MIMIC-III, MIMIC-IV and eICU databases - an abstract}
+
+	\author{Levin Palm}
+
+	\maketitle
+
+
+	\section{Introduction}
+
+		Sepsis is one of the leading causes of death in the intensive care units (ICU) of hospitals. 
+		Predicting sepsis in a patient can increase the survival chances. \cite{paper1}, \cite{paper2}, \cite{paper3}
+		It is therefore important to build and evaluate models which can predict sepsis as early as possible. 
+		The development of machine learning techniques in recent years has made it easier than ever to process data such as patient vitals. 
+		Therefore it makes sense to train machine learning models on ICU stay data to predict wether or not a patient will develop a sepsis and what the mortality rate is.
+
+	\section{Background}
+
+		Research into this topic has been conducted but the studies found only focused on the MIMIC-III database.\cite{paper1}, \cite{paper2}, \cite{paper3}
+		The search term (MIMIC-III OR MIMIC-IV) AND SEPSIS has been used to find
+		papers in PubMed. After reviewing the titles a few studies have been selected for further analysis. After reading the abstracts and 
+		clustering the papers into similar topics the full texts of the remaining papers have been extracted. The following
+		papers have been extracted from PubMed to base this research on:
+
+		% table of studies
+		\begin{center}
+			\begin{tabular}{|p{1.5cm}|p{3cm}|p{5cm}|p{1.5cm}|p{2.5cm}|p{2cm}|}
+				\hline
+				\textbf{Author} & \textbf{Population / Database} & \textbf{Features} & \textbf{Models} & \textbf{Handling of missing values} & \textbf{Best model}\\				
+				\hline
+				Hou et al &
+				4559 / MIMIC-III &
+				Sofa, Aniongap\_min, Creatinine\_min, Chloride\_min, Hematocrit\_min, Hemoglobin\_min, Hemoglobin\_max, Lactate\_min, Potassium\_min, Sodium\_max, Bun\_min, Bun\_max, Wbc\_min, Wbc\_max, Heartrate\_min, Heartrate\_mean, Sysbp\_min, Meanbp\_min, Resprate\_mean, Tempc\_min, Tempc\_max, Spo2\_mean, Age, Diabetes, Vent & LR, SAPS-II, XGBoost &
+				excluded when >20\%, "further analysis" &
+				XGBoost: AUC 0.857\\
+				\hline
+				Su Y et al &
+				2874 / MIMIC-III &
+				Age, AST, MCV, ALT, Urea Nitrogen, PTT, PT, RDW, Lactate, Albumin, Total Bilirubin &
+				MLP, LR, SOFA, APACHEII &
+				excluded when >5\% &
+				ANN: AUC 0.811\\
+				\hline
+				Wang Y et al &
+				1185 / MIMIC-III &
+				age gender, ethnicity, respiratory rate, heart rate, mean arterial pressure, SpO 2, sodium, potassium, phosphate, calcium, magnesium, INR, bicarbonate, COPD (Y/N), heart failure (Y/N), diabetes mellitus (Y/N), renal failure (Y/N), malignant cancer (Y/N), SAPS-II, SOFA, dialysis (Y/N), input (mL), and output (mL) &
+				XGBoost & 
+				/ &
+				XGBoost: AUC 0.781\\
+				\hline
+			\end{tabular}
+		\end{center}
+
+	\section{Methodology}
+
+		% how to do what
+		% data extract, explore, preprocess
+		% models and training
+
+		The task of this thesis will be a classification task to classify wether a patient will be alive 30 days after the sepsis diagnosis or not. The existing papers used the AUC metric to evaluate the performance and this thesis will do so too to compare the results. But other metrics such as the traditional F1 score can be used for illustrative purposes.
+
+		To validate the results of the existing research, the features from said papers have to be extracted from the databases (MIMIC-III, MIMIC-IV \cite{physio} and eICU \cite{eicu}).,  The maximum set of features which exist in all three databases will be used to train machine
+		learning models. Using explorative methods further features can be added after getting a baseline for predictions.
+
+		After finding the set of features the data entries have to be extracted from the databases to costruct the cohort for this study. 
+		Additional research will be conducted to find strategies to deal with missing values and invalid data points.
+		Commonly entries with too many missing values will be dropped completely. Too many being defined by a threshold. (see Table in Section 2)
+
+		This thesis will focus mainly on XGBoost \cite{xgb}, but more traditional algorithms such as Logistic Regression \cite{logistic} and Random Forests \cite{randomforest} will also be compared against.
+
+	\section{Goal}
+
+		The main goal will be to compare the performance of the three databases (MIMIC-III, MIMIC-IV \cite{physio} and eICU \cite{eicu}) using machine learning
+		algorithms such as XGBoost \cite{xgb}, Logistic Regression \cite{logistic} and Random Forests \cite{randomforest} to predict the 30 day mortality of patients and determine, which database gives the highest test score.
+
+	\begin{thebibliography}{9}
+
+	\bibitem{paper1}
+		Hou N, Li M, He L, Xie B, Wang L, Zhang R, Yu Y, Sun X, Pan Z, Wang K. Predicting 30-days mortality for MIMIC-III patients with sepsis-3: a machine learning approach using XGboost. J Transl Med. 2020 Dec 7;18(1):462. doi: 10.1186/s12967-020-02620-5. PMID: 33287854; PMCID: PMC7720497.
+
+	\bibitem{paper2}
+		Su Y, Guo C, Zhou S, Li C, Ding N. Early predicting 30-day mortality in sepsis in MIMIC-III by an artificial neural networks model. Eur J Med Res. 2022 Dec 17;27(1):294. doi: 10.1186/s40001-022-00925-3. PMID: 36528689; PMCID: PMC9758460.
+
+	\bibitem{paper3}
+		Wang Y, Feng S. A prediction model for 30-day mortality of sepsis patients based on intravenous fluids and electrolytes. Medicine (Baltimore). 2022 Sep 30;101(39):e30578. doi: 10.1097/MD.0000000000030578. PMID: 36181047; PMCID: PMC9524964.
+
+	\bibitem{physio}
+		Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark RG, Mietus JE, Moody GB, Peng C-K, Stanley HE. PhysioBank, PhysioToolkit, and PhysioNet: Components of a New Research Resource for Complex Physiologic Signals. Circulation 101(23):e215-e220 [Circulation Electronic Pages; http://circ.ahajournals.org/content/101/23/e215.full]; 2000 (June 13).
+
+	\bibitem{eicu}
+		The eICU Collaborative Research Database, a freely available multi-center database for critical care research. Pollard TJ, Johnson AEW, Raffa JD, Celi LA, Mark RG and Badawi O. Scientific Data (2018). DOI: http://dx.doi.org/10.1038/sdata.2018.178. Available from: https://www.nature.com/articles/sdata2018178
+
+	\bibitem{xgb}
+		Tianqi Chen, Carlos Guestrin 2016: XGBoost: A Scalable Tree Boosting System
+		https://dl.acm.org/doi/10.1145/2939672.2939785
+
+	\bibitem{logistic}
+		Maalouf, Maher. (2011). Logistic regression in data analysis: An overview. International Journal of Data Analysis Techniques and Strategies. 3. 281-299. 10.1504/IJDATS.2011.041335. 
+
+	\bibitem{randomforest}
+		Cutler, Adele \& Cutler, David \& Stevens, John. (2011). Random Forests. 10.1007/978-1-4419-9326-7\_5. 
+
+	\end{thebibliography}
+
+\end{document}
