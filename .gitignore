@@ -1,1 +1,8 @@
 .env
+*.aux
+*.pdf
+*.fls
+*.log
+*.out
+*.fdb_latexmk
+graphics/
